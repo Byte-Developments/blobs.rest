@@ -7,7 +7,10 @@ export default function DiagonalStripesBackground() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     let animationFrameId;
 
     canvas.width = window.innerWidth;
