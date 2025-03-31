@@ -11,7 +11,8 @@ export default function DiagonalStripesBackground() {
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    let animationFrameId;
+
+    let animationFrameId: number;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -21,7 +22,15 @@ export default function DiagonalStripesBackground() {
     const stripeSpacing = 60;
     const waveInterval = 5000;
     let lastWaveTime = 0;
-    let stripes = [];
+    let stripes: Stripe[] = [];
+
+    type Stripe = {
+      yOffset: number;
+      color1: string;
+      color2: string;
+      opacity: number;
+      fadeIn: boolean;
+    };
 
     const colorPairs = [
       ["rgba(255, 200, 200, 0.0)", "rgba(255, 150, 150, 0.6)"],
@@ -29,7 +38,7 @@ export default function DiagonalStripesBackground() {
       ["rgba(230, 220, 255, 0.0)", "rgba(180, 170, 250, 0.6)"]
     ];
 
-    function createStripe(yOffset, color1, color2) {
+    function createStripe(yOffset: number, color1: string, color2: string): Stripe {
       return {
         yOffset,
         color1,
@@ -46,7 +55,7 @@ export default function DiagonalStripesBackground() {
       );
     }
 
-    function drawStripe(stripe) {
+    function drawStripe(stripe: Stripe) {
       const gradient = ctx.createLinearGradient(0, stripe.yOffset, stripeWidth, stripe.yOffset + stripeHeight);
       gradient.addColorStop(0, stripe.color1);
       gradient.addColorStop(1, stripe.color2);
@@ -72,7 +81,7 @@ export default function DiagonalStripesBackground() {
       ctx.globalAlpha = 1.0;
     }
 
-    function animate(time) {
+    function animate(time: number) {
       ctx.fillStyle = "#11121c";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
