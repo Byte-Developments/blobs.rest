@@ -9,9 +9,10 @@ export default function DiagonalStripesBackground() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
 
+    const ctx = context as CanvasRenderingContext2D;
     let animationFrameId: number;
 
     canvas.width = window.innerWidth;
