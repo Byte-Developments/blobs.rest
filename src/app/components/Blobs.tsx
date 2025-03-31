@@ -50,8 +50,9 @@ export default function DiagonalStripesBackground() {
 
     function spawnWave() {
       const [color1, color2] = colorPairs[Math.floor(Math.random() * colorPairs.length)];
-      stripes = Array.from({ length: Math.floor(canvas.height / stripeSpacing) }, (_, i) =>
-        createStripe(i * stripeSpacing - canvas.height, color1, color2)
+      const stripeCount = Math.floor((canvas?.height ?? window.innerHeight) / stripeSpacing);
+      stripes = Array.from({ length: stripeCount }, (_, i) =>
+        createStripe(i * stripeSpacing - (canvas?.height ?? window.innerHeight), color1, color2)
       );
     }
 
