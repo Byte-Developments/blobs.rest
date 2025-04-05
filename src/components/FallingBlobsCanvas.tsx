@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 
 type Blob = {
@@ -29,9 +31,9 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const ctx = canvas?.getContext("2d");
+
+    if (!canvas || !ctx) return;
 
     let animationFrameId: number;
     let blobs: Blob[] = [];
@@ -40,19 +42,21 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
     const maxBlobs = baseBlobs + 5;
     const numParticles = 100;
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
     const gradients = [
       ["#ffe0e0", "#ffb3b3"],
       ["#e0f7ff", "#b3e5fc"],
       ["#f5e8ff", "#dab6ff"],
       ["#fff6e0", "#ffe0a3"]
     ];
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
     function createBlob(): Blob {
       const [color1, color2] = gradients[Math.floor(Math.random() * gradients.length)];
@@ -180,11 +184,17 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
     }
 
     animationFrameId = requestAnimationFrame(animate);
+
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", resizeCanvas);
     };
   }, [mouse]);
 
-  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full z-10 backdrop-blur-sm" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed top-0 left-0 w-full h-full z-10 backdrop-blur-sm"
+    />
+  );
 }
