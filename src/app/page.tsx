@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import CentralText from "@/components/CentralText";
-import FallingBlobsCanvas from "@/components/FallingBlobsCanvas";
-import AmbientAudio from "@/components/AmbientAudio";
+import CentralText from "./components/CentralText";
+import FallingBlobsCanvas from "./components/FallingBlobsCanvas";
+import AmbientAudio from "./components/AmbientAudio";
 
 export default function Home() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
