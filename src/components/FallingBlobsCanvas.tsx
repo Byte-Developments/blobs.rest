@@ -32,20 +32,7 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
   useEffect(() => {
     const canvasEl = canvasRef.current!;
     const ctx = canvasEl.getContext("2d")!;
-
     let animationFrameId: number;
-    let blobs: Blob[] = [];
-    const particles: Particle[] = [];
-    const baseBlobs = Math.max(5, Math.floor(window.innerWidth / 150));
-    const maxBlobs = baseBlobs + 5;
-    const numParticles = 100;
-
-    const gradients = [
-      ["#ffe0e0", "#ffb3b3"],
-      ["#e0f7ff", "#b3e5fc"],
-      ["#f5e8ff", "#dab6ff"],
-      ["#fff6e0", "#ffe0a3"]
-    ];
 
     function resizeCanvas() {
       const el = canvasRef.current;
@@ -56,6 +43,19 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
+
+    const gradients = [
+      ["#ffe0e0", "#ffb3b3"],
+      ["#e0f7ff", "#b3e5fc"],
+      ["#f5e8ff", "#dab6ff"],
+      ["#fff6e0", "#ffe0a3"]
+    ];
+
+    const blobs: Blob[] = [];
+    const particles: Particle[] = [];
+    const baseBlobs = Math.max(5, Math.floor(window.innerWidth / 150));
+    const maxBlobs = baseBlobs + 5;
+    const numParticles = 100;
 
     function createBlob(): Blob {
       const [color1, color2] = gradients[Math.floor(Math.random() * gradients.length)];
@@ -80,8 +80,8 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
 
     function createParticle(): Particle {
       return {
-        x: Math.random() * canvasEl!.width,
-        y: Math.random() * canvasEl!.height,
+        x: Math.random() * canvasEl.width,
+        y: Math.random() * canvasEl.height,
         size: Math.random() * 2,
         alpha: 0.05 + Math.random() * 0.1,
         speedY: 0.1 + Math.random() * 0.3
@@ -95,12 +95,12 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
     let spawnTimer = 0;
 
     function drawBackgroundGradient() {
-      const gradient = ctx.createLinearGradient(0, 0, canvasEl!.width, canvasEl!.height);
+      const gradient = ctx.createLinearGradient(0, 0, canvasEl.width, canvasEl.height);
       gradient.addColorStop(0, "#10121b");
       gradient.addColorStop(0.5, "#181c2b");
       gradient.addColorStop(1, "#0f111a");
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvasEl!.width, canvasEl!.height);
+      ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
     }
 
     function drawBlob(blob: Blob, time: number) {
@@ -126,9 +126,9 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
         ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
         ctx.fill();
         p.y += p.speedY;
-        if (p.y > canvasEl!.height) {
+        if (p.y > canvasEl.height) {
           p.y = 0;
-          p.x = Math.random() * canvasEl!.width;
+          p.x = Math.random() * canvasEl.width;
         }
       });
     }
@@ -141,23 +141,30 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
         0,
         mouse.x,
         mouse.y,
-        canvasEl!.width * 0.5
+        canvasEl.width * 0.5
       );
       glow.addColorStop(0, `rgba(255, 255, 255, ${glowStrength})`);
       glow.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, canvasEl!.width, canvasEl!.height);
+      ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
     }
 
     function updateBlob(blob: Blob, index: number) {
       blob.phase += 0.01;
-      blob.y += blob.speed;
       blob.opacity += (blob.targetOpacity - blob.opacity) * 0.02;
+
+      const attraction = 0.005;
       const dx = mouse.x - blob.anchorX;
       const dy = mouse.y - blob.anchorY;
-      blob.x = blob.anchorX + dx * 0.01 + Math.sin(blob.phase) * 5;
-      blob.y = blob.anchorY + dy * 0.01 + Math.cos(blob.phase) * 5 + (blob.y - blob.anchorY) * 0.01;
-      if (blob.y - blob.radius > canvasEl!.height) {
+
+      blob.x = blob.anchorX + Math.sin(blob.phase) * 5 + dx * attraction;
+      blob.y = blob.anchorY + Math.cos(blob.phase) * 5 + dy * attraction;
+
+      if (
+        blob.x + blob.radius < 0 ||
+        blob.x - blob.radius > canvasEl.width ||
+        blob.y - blob.radius > canvasEl.height
+      ) {
         blobs.splice(index, 1);
       }
     }
