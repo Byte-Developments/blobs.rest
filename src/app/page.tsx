@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import FallingBlobsCanvas from "@/components/FallingBlobsCanvas";
 import AmbientAudio from "@/components/AmbientAudio";
-import CenteralText from "@/components/CentralText";
+import CentralText from "@/components/CentralText";
 
 export default function Home() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
