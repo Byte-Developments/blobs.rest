@@ -30,10 +30,8 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-
-    if (!canvas || !ctx) return;
+    const canvasEl = canvasRef.current!;
+    const ctx = canvasEl.getContext("2d")!;
 
     let animationFrameId: number;
     let blobs: Blob[] = [];
@@ -50,9 +48,10 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
     ];
 
     function resizeCanvas() {
-      if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const el = canvasRef.current;
+      if (!el) return;
+      el.width = window.innerWidth;
+      el.height = window.innerHeight;
     }
 
     resizeCanvas();
@@ -81,8 +80,8 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
 
     function createParticle(): Particle {
       return {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * canvasEl!.width,
+        y: Math.random() * canvasEl!.height,
         size: Math.random() * 2,
         alpha: 0.05 + Math.random() * 0.1,
         speedY: 0.1 + Math.random() * 0.3
@@ -96,12 +95,12 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
     let spawnTimer = 0;
 
     function drawBackgroundGradient() {
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      const gradient = ctx.createLinearGradient(0, 0, canvasEl!.width, canvasEl!.height);
       gradient.addColorStop(0, "#10121b");
       gradient.addColorStop(0.5, "#181c2b");
       gradient.addColorStop(1, "#0f111a");
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvasEl!.width, canvasEl!.height);
     }
 
     function drawBlob(blob: Blob, time: number) {
@@ -127,9 +126,9 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
         ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
         ctx.fill();
         p.y += p.speedY;
-        if (p.y > canvas.height) {
+        if (p.y > canvasEl!.height) {
           p.y = 0;
-          p.x = Math.random() * canvas.width;
+          p.x = Math.random() * canvasEl!.width;
         }
       });
     }
@@ -142,12 +141,12 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
         0,
         mouse.x,
         mouse.y,
-        canvas.width * 0.5
+        canvasEl!.width * 0.5
       );
       glow.addColorStop(0, `rgba(255, 255, 255, ${glowStrength})`);
       glow.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvasEl!.width, canvasEl!.height);
     }
 
     function updateBlob(blob: Blob, index: number) {
@@ -158,7 +157,7 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
       const dy = mouse.y - blob.anchorY;
       blob.x = blob.anchorX + dx * 0.01 + Math.sin(blob.phase) * 5;
       blob.y = blob.anchorY + dy * 0.01 + Math.cos(blob.phase) * 5 + (blob.y - blob.anchorY) * 0.01;
-      if (blob.y - blob.radius > canvas.height) {
+      if (blob.y - blob.radius > canvasEl!.height) {
         blobs.splice(index, 1);
       }
     }

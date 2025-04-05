@@ -5,7 +5,7 @@ import FallingBlobsCanvas from "@/components/FallingBlobsCanvas";
 import AmbientAudio from "@/components/AmbientAudio";
 import CentralText from "@/components/CentralText";
 
-export default function Home() {
+export default function App() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
