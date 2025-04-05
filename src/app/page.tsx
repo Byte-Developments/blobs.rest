@@ -1,8 +1,26 @@
-import Image from "next/image";
-import DiagonalStripesBackground from "./components/Blobs";
+"use client";
+
+import { useState, useEffect } from "react";
+import CentralText from "@/components/CentralText";
+import FallingBlobsCanvas from "@/components/FallingBlobsCanvas";
+import AmbientAudio from "@/components/AmbientAudio";
 
 export default function Home() {
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      setMouse({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMove);
+    return () => window.removeEventListener("mousemove", handleMove);
+  }, []);
+
   return (
-    <DiagonalStripesBackground />
+    <>
+      <FallingBlobsCanvas mouse={mouse} />
+      <CentralText />
+      <AmbientAudio />
+    </>
   );
 }
