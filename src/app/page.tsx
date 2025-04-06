@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import FallingBlobsCanvas from "@/components/FallingBlobsCanvas";
 import AmbientAudio from "@/components/AmbientAudio";
+import CornerIcons from "@/components/BottomBar";
 import CentralText from "@/components/CentralText";
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
       <FallingBlobsCanvas mouse={mouse} />
       <CentralText />
       <AmbientAudio />
+      <CornerIcons />
     </>
   );
 }
