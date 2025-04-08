@@ -159,7 +159,7 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
       blob.phase += 0.01;
       blob.opacity += (blob.targetOpacity - blob.opacity) * 0.02;
 
-      const attraction = 0.005;
+      const attraction = 0.01;
       const dx = mouse.x - blob.anchorX;
       const dy = mouse.y - blob.anchorY;
 
