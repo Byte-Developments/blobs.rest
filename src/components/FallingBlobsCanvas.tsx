@@ -44,6 +44,12 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
+    let mouse = { x: canvasEl.width / 2, y: canvasEl.height / 2 };
+    canvasEl.addEventListener("mousemove", (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    
     const gradients = [
       ["#ffe0e0", "#ffb3b3"],
       ["#e0f7ff", "#b3e5fc"],
@@ -195,7 +201,7 @@ export default function FallingBlobsCanvas({ mouse }: { mouse: { x: number; y: n
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", resizeCanvas);
     };
-  }, [mouse]);
+  }, []);
 
   return (
     <canvas
