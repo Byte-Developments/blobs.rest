@@ -9,6 +9,7 @@ module.exports = {
       fontFamily: {
         Sofia: ['Sofia Pro Regular', 'serif'],
         SofiaBold: ['Sofia Pro Bold', 'serif'],
+        Montserrat: ['Montserrat', 'serif'],
       },
     },
   },
