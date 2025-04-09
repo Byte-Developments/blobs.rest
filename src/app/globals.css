@@ -1,6 +1,5 @@
-@import "tailwindcss";
 @import url("https://use.typekit.net/gwi6lll.css");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
