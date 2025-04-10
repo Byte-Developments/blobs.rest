@@ -13,8 +13,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "blobs.rest",
-  description: "relaxing visuals for everyone",
+  title: "blobs.rest | visuals",
+  description:
+    "blobs.rest - relaxing visuals for you.",
+  keywords: [
+    "blobs rest",
+    "blobs.rest",
+    "blobs",
+    "relaxing"
+  ],
+  openGraph: {
+    url: "https://blobs.rest",
+    type: "website",
+    title: "blobs.rest | visuals",
+    description:
+      "blobs.rest - relaxing visuals for you."
+  },
+  alternates: {
+    canonical: "https://blobs.rest"
+  }
 };
 
 export default function RootLayout({
