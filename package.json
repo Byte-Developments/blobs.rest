@@ -15,7 +15,8 @@
     "react-dom": "^19.0.0",
     "framer-motion": "^11.0.0",
     "react-icons": "^5.5.0",
-    "next-sitemap": "^4.2.3"
+    "next-sitemap": "^4.2.3",
+    "@vercel/analytics": "^1.5.0"
   },
   "devDependencies": {
     "typescript": "^5.4.0",
