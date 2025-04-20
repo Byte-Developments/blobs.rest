@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react"
 
 export const metadata: Metadata = {
   title: "Neon Pipes Visual - Relax and Focus",
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"></link>
       </head>
       <body>{children}</body>
+      <Analytics />
     </html>
   );
 }

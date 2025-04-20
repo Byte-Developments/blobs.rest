@@ -19,7 +19,7 @@ export default function AmbientMusic() {
 
   return (
     <audio ref={audioRef} loop>
-      <source src="/ambient.mp3" type="audio/mp3" />
+      <source src="/bg_music.mp3" type="audio/mp3" />
       Your browser does not support the audio element.
     </audio>
   );
