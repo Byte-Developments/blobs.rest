@@ -11,6 +11,7 @@ export default function AmbientMusic() {
   const [visible, setVisible] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [volume, setVolume] = useState<number>(0.2);
+  const [audioCtx, setAudioCtx] = useState<AudioContext | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -35,19 +36,24 @@ export default function AmbientMusic() {
   }, []);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    if (!isPlaying || !audioRef.current || !canvasRef.current) return;
+
     const audio = audioRef.current;
-    if (!canvas || !audio) return;
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const audioCtx = new AudioContext();
-    const source = audioCtx.createMediaElementSource(audio);
-    const analyser = audioCtx.createAnalyser();
+    const newAudioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const analyser = newAudioCtx.createAnalyser();
+    const source = newAudioCtx.createMediaElementSource(audio);
+
+    source.connect(analyser);
+    analyser.connect(newAudioCtx.destination);
+
     analyser.fftSize = 64;
     analyserRef.current = analyser;
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
+    setAudioCtx(newAudioCtx);
+
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
@@ -71,6 +77,12 @@ export default function AmbientMusic() {
     canvas.width = 200;
     canvas.height = 40;
     render();
+
+    return () => {
+      analyser.disconnect();
+      source.disconnect();
+      newAudioCtx.close();
+    };
   }, [isPlaying]);
 
   const fadeOutAndPause = (audio: HTMLAudioElement) => {
