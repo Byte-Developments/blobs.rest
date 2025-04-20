@@ -50,7 +50,7 @@ export default function AmbientMusic() {
     source.connect(analyser);
     analyser.connect(newAudioCtx.destination);
 
-    analyser.fftSize = 64;
+    analyser.fftSize = 32; // fewer bars
     analyserRef.current = analyser;
     setAudioCtx(newAudioCtx);
 
@@ -63,19 +63,19 @@ export default function AmbientMusic() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const barWidth = canvas.width / bufferLength;
-      dataArray.forEach((value, i) => {
+      for (let i = 0; i < bufferLength; i += 2) {
         const x = i * barWidth;
-        const h = (value / 255) * canvas.height;
+        const h = (dataArray[i] / 255) * canvas.height;
         const gradient = ctx.createLinearGradient(x, canvas.height - h, x, canvas.height);
         gradient.addColorStop(0, "#ffa94d");
         gradient.addColorStop(1, "#ff7e5f");
         ctx.fillStyle = gradient;
         ctx.fillRect(x, canvas.height - h, barWidth - 2, h);
-      });
+      }
     };
 
-    canvas.width = 200;
-    canvas.height = 40;
+    canvas.width = 100;
+    canvas.height = 20;
     render();
 
     return () => {
@@ -156,35 +156,37 @@ export default function AmbientMusic() {
         className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 text-white transition-opacity duration-500 ${visible ? "opacity-100" : "opacity-0"}`}
       >
         <div
-          className={`flex items-center gap-3 px-4 py-2 bg-black/40 rounded-full backdrop-blur-md shadow-md transition-all duration-300 ${expanded ? "w-[14rem]" : "w-auto"}`}
+          className={`flex flex-col items-center gap-1 px-4 py-3 bg-black/40 rounded-full backdrop-blur-md shadow-md transition-all duration-300 ${expanded ? "w-[14rem]" : "w-auto"}`}
         >
-          <button
-            onClick={toggleAudio}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-transform duration-300 hover:scale-105"
-          >
-            {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-          </button>
-          <div className="relative flex items-center justify-center">
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => setExpanded(!expanded)}
+              onClick={toggleAudio}
               className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-transform duration-300 hover:scale-105"
             >
-              <Volume2 className="w-5 h-5" />
+              {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
             </button>
-            {expanded && (
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={volume}
-                onChange={handleVolumeChange}
-                className="ml-3 h-2 w-28 appearance-none bg-green-400/40 rounded-lg [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:bg-green-300 [&::-webkit-slider-thumb]:rounded-full"
-              />
-            )}
+            <div className="relative flex items-center justify-center">
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-transform duration-300 hover:scale-105"
+              >
+                <Volume2 className="w-5 h-5" />
+              </button>
+              {expanded && (
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="ml-3 h-2 w-28 appearance-none bg-green-400/40 rounded-lg [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:bg-green-300 [&::-webkit-slider-thumb]:rounded-full"
+                />
+              )}
+            </div>
           </div>
+          <canvas ref={canvasRef} className="w-28 h-5" />
         </div>
-        <canvas ref={canvasRef} className="mt-2 w-full h-10" />
       </div>
     </>
   );
