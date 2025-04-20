@@ -8,31 +8,30 @@ export default function AmbientMusic() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [visible, setVisible] = useState(true);
   const [showSlider, setShowSlider] = useState(false);
-  const [volume, setVolume] = useState<number>(() => {
-    return parseFloat(localStorage.getItem("ambient-volume") || "0.2");
-  });
+  const [volume, setVolume] = useState<number>(0.2);
 
-  // Load play state & volume on mount
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    if (typeof window !== "undefined") {
+      const storedVolume = parseFloat(localStorage.getItem("ambient-volume") || "0.2");
+      const audio = audioRef.current;
+      if (audio) audio.volume = storedVolume;
+      setVolume(storedVolume);
 
-    audio.volume = volume;
-    if (localStorage.getItem("ambient-play") === "true") {
-      audio.play().then(() => setIsPlaying(true)).catch(() => {});
-    }
-
-    const tryPlay = () => {
-      if (audio.paused) {
-        audio.play().then(() => setIsPlaying(true)).catch(() => {});
+      if (localStorage.getItem("ambient-play") === "true") {
+        audio?.play().then(() => setIsPlaying(true)).catch(() => {});
       }
-    };
 
-    window.addEventListener("click", tryPlay, { once: true });
-    return () => window.removeEventListener("click", tryPlay);
+      const tryPlay = () => {
+        if (audio?.paused) {
+          audio.play().then(() => setIsPlaying(true)).catch(() => {});
+        }
+      };
+
+      window.addEventListener("click", tryPlay, { once: true });
+      return () => window.removeEventListener("click", tryPlay);
+    }
   }, []);
 
-  // Smooth fade-out on pause
   const fadeOutAndPause = (audio: HTMLAudioElement) => {
     const fade = () => {
       if (audio.volume > 0.05) {
@@ -42,13 +41,14 @@ export default function AmbientMusic() {
         audio.volume = 0;
         audio.pause();
         setIsPlaying(false);
-        localStorage.setItem("ambient-play", "false");
+        if (typeof window !== "undefined") {
+          localStorage.setItem("ambient-play", "false");
+        }
       }
     };
     fade();
   };
 
-  // Play/pause toggle
   const toggleAudio = () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -56,13 +56,14 @@ export default function AmbientMusic() {
       audio.volume = volume;
       audio.play();
       setIsPlaying(true);
-      localStorage.setItem("ambient-play", "true");
+      if (typeof window !== "undefined") {
+        localStorage.setItem("ambient-play", "true");
+      }
     } else {
       fadeOutAndPause(audio);
     }
   };
 
-  // Hide controls after inactivity
   const handleMouseMove = () => {
     setVisible(true);
     clearTimeout((window as any)._hideTimeout);
@@ -74,16 +75,15 @@ export default function AmbientMusic() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Volume change + tick effect
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = newVolume;
     setVolume(newVolume);
-    localStorage.setItem("ambient-volume", newVolume.toString());
-
-    // Play tick
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ambient-volume", newVolume.toString());
+    }
     if (tickRef.current) {
       tickRef.current.currentTime = 0;
       tickRef.current.play().catch(() => {});
@@ -92,30 +92,22 @@ export default function AmbientMusic() {
 
   return (
     <>
-      {/* Ambient track */}
       <audio ref={audioRef} loop>
         <source src="/bg_music.mp3" type="audio/mp3" />
       </audio>
-
-      {/* Tick sound effect */}
       <audio ref={tickRef}>
         <source src="/click.mp3" type="audio/mp3" />
       </audio>
-
-      {/* Control panel */}
       <div
         className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 text-white px-3 py-2 bg-black/40 rounded-full backdrop-blur-md shadow-md transition-opacity duration-500 ${visible ? "opacity-100" : "opacity-0"}`}
       >
         <div className="relative flex items-center gap-2">
-          {/* Play / Pause Button */}
           <button
             onClick={toggleAudio}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300"
           >
             {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
           </button>
-
-          {/* Volume Button + Slider */}
           <div
             onMouseEnter={() => setShowSlider(true)}
             onMouseLeave={() => setShowSlider(false)}
@@ -124,7 +116,6 @@ export default function AmbientMusic() {
             <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
               <Volume2 className="w-5 h-5" />
             </button>
-
             {showSlider && (
               <input
                 type="range"
@@ -133,12 +124,7 @@ export default function AmbientMusic() {
                 step="0.05"
                 value={volume}
                 onChange={handleVolumeChange}
-                className="absolute bottom-12 h-32 w-1 bg-white/40 appearance-none cursor-pointer [writing-mode:bt-lr] 
-                  [&::-webkit-slider-thumb]:appearance-none 
-                  [&::-webkit-slider-thumb]:h-4 
-                  [&::-webkit-slider-thumb]:w-4 
-                  [&::-webkit-slider-thumb]:bg-white 
-                  [&::-webkit-slider-thumb]:rounded-full"
+                className="absolute bottom-12 h-32 w-1 bg-white/40 appearance-none cursor-pointer [writing-mode:bt-lr] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
               />
             )}
           </div>
