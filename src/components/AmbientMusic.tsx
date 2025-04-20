@@ -5,6 +5,8 @@ import { Pause, Play, Volume2 } from "lucide-react";
 export default function AmbientMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const tickRef = useRef<HTMLAudioElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [visible, setVisible] = useState(true);
   const [expanded, setExpanded] = useState(false);
@@ -31,6 +33,45 @@ export default function AmbientMusic() {
       return () => window.removeEventListener("click", tryPlay);
     }
   }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const audio = audioRef.current;
+    if (!canvas || !audio) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const audioCtx = new AudioContext();
+    const source = audioCtx.createMediaElementSource(audio);
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    analyserRef.current = analyser;
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const render = () => {
+      requestAnimationFrame(render);
+      analyser.getByteFrequencyData(dataArray);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const barWidth = canvas.width / bufferLength;
+      dataArray.forEach((value, i) => {
+        const x = i * barWidth;
+        const h = (value / 255) * canvas.height;
+        const gradient = ctx.createLinearGradient(x, canvas.height - h, x, canvas.height);
+        gradient.addColorStop(0, "#ffa94d");
+        gradient.addColorStop(1, "#ff7e5f");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x, canvas.height - h, barWidth - 2, h);
+      });
+    };
+
+    canvas.width = 200;
+    canvas.height = 40;
+    render();
+  }, [isPlaying]);
 
   const fadeOutAndPause = (audio: HTMLAudioElement) => {
     const fade = () => {
@@ -85,6 +126,7 @@ export default function AmbientMusic() {
       localStorage.setItem("ambient-volume", newVolume.toString());
     }
     if (tickRef.current) {
+      tickRef.current.volume = 0.2;
       tickRef.current.currentTime = 0;
       tickRef.current.play().catch(() => {});
     }
@@ -130,6 +172,7 @@ export default function AmbientMusic() {
             )}
           </div>
         </div>
+        <canvas ref={canvasRef} className="mt-2 w-full h-10" />
       </div>
     </>
   );
