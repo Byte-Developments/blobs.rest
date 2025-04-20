@@ -7,7 +7,7 @@ export default function AmbientMusic() {
   const tickRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [visible, setVisible] = useState(true);
-  const [showSlider, setShowSlider] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [volume, setVolume] = useState<number>(0.2);
 
   useEffect(() => {
@@ -93,30 +93,31 @@ export default function AmbientMusic() {
   return (
     <>
       <audio ref={audioRef} loop>
-        <source src="/bg_music.mp3" type="audio/mp3" />
+        <source src="/ambient.mp3" type="audio/mp3" />
       </audio>
       <audio ref={tickRef}>
-        <source src="/click.mp3" type="audio/mp3" />
+        <source src="/sounds/tick.mp3" type="audio/mp3" />
       </audio>
       <div
-        className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 text-white px-3 py-2 bg-black/40 rounded-full backdrop-blur-md shadow-md transition-opacity duration-500 ${visible ? "opacity-100" : "opacity-0"}`}
+        className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 text-white transition-opacity duration-500 ${visible ? "opacity-100" : "opacity-0"}`}
       >
-        <div className="relative flex items-center gap-2">
+        <div
+          className={`flex items-center gap-2 px-3 py-2 bg-black/40 rounded-full backdrop-blur-md shadow-md transition-all duration-300 ${expanded ? "w-52" : "w-auto"}`}
+        >
           <button
             onClick={toggleAudio}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300"
           >
             {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
           </button>
-          <div
-            onMouseEnter={() => setShowSlider(true)}
-            onMouseLeave={() => setShowSlider(false)}
-            className="relative flex items-center justify-center"
-          >
-            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
+          <div className="relative flex items-center justify-center">
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+            >
               <Volume2 className="w-5 h-5" />
             </button>
-            {showSlider && (
+            {expanded && (
               <input
                 type="range"
                 min="0"
@@ -124,7 +125,7 @@ export default function AmbientMusic() {
                 step="0.05"
                 value={volume}
                 onChange={handleVolumeChange}
-                className="absolute bottom-12 h-32 w-1 bg-white/40 appearance-none cursor-pointer [writing-mode:bt-lr] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
+                className="ml-3 h-2 w-28 appearance-none bg-white/30 rounded-lg [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
               />
             )}
           </div>
