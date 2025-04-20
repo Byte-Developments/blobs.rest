@@ -1,26 +1,29 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Pause, Play } from "lucide-react";
+import { Pause, Play, Volume2 } from "lucide-react";
 
 export default function AmbientMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const tickRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [visible, setVisible] = useState(true);
+  const [showSlider, setShowSlider] = useState(false);
+  const [volume, setVolume] = useState<number>(() => {
+    return parseFloat(localStorage.getItem("ambient-volume") || "0.2");
+  });
 
+  // Load play state & volume on mount
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const storedPlay = localStorage.getItem("ambient-play") === "true";
-    const storedVolume = parseFloat(localStorage.getItem("ambient-volume") || "0.2");
-
-    audio.volume = storedVolume;
-    if (storedPlay) {
+    audio.volume = volume;
+    if (localStorage.getItem("ambient-play") === "true") {
       audio.play().then(() => setIsPlaying(true)).catch(() => {});
     }
 
     const tryPlay = () => {
-      if (storedPlay && audio.paused) {
+      if (audio.paused) {
         audio.play().then(() => setIsPlaying(true)).catch(() => {});
       }
     };
@@ -29,6 +32,7 @@ export default function AmbientMusic() {
     return () => window.removeEventListener("click", tryPlay);
   }, []);
 
+  // Smooth fade-out on pause
   const fadeOutAndPause = (audio: HTMLAudioElement) => {
     const fade = () => {
       if (audio.volume > 0.05) {
@@ -44,11 +48,12 @@ export default function AmbientMusic() {
     fade();
   };
 
+  // Play/pause toggle
   const toggleAudio = () => {
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
-      audio.volume = parseFloat(localStorage.getItem("ambient-volume") || "0.2");
+      audio.volume = volume;
       audio.play();
       setIsPlaying(true);
       localStorage.setItem("ambient-play", "true");
@@ -57,6 +62,7 @@ export default function AmbientMusic() {
     }
   };
 
+  // Hide controls after inactivity
   const handleMouseMove = () => {
     setVisible(true);
     clearTimeout((window as any)._hideTimeout);
@@ -68,24 +74,75 @@ export default function AmbientMusic() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  // Volume change + tick effect
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = newVolume;
+    setVolume(newVolume);
+    localStorage.setItem("ambient-volume", newVolume.toString());
+
+    // Play tick
+    if (tickRef.current) {
+      tickRef.current.currentTime = 0;
+      tickRef.current.play().catch(() => {});
+    }
+  };
+
   return (
     <>
-      <audio ref={audioRef} loop onVolumeChange={(e) => {
-        const target = e.target as HTMLAudioElement;
-        localStorage.setItem("ambient-volume", target.volume.toString());
-      }}>
+      {/* Ambient track */}
+      <audio ref={audioRef} loop>
         <source src="/bg_music.mp3" type="audio/mp3" />
-        Your browser does not support the audio element.
       </audio>
+
+      {/* Tick sound effect */}
+      <audio ref={tickRef}>
+        <source src="/click.mp3" type="audio/mp3" />
+      </audio>
+
+      {/* Control panel */}
       <div
         className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 text-white px-3 py-2 bg-black/40 rounded-full backdrop-blur-md shadow-md transition-opacity duration-500 ${visible ? "opacity-100" : "opacity-0"}`}
       >
-        <button
-          onClick={toggleAudio}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300"
-        >
-          {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-        </button>
+        <div className="relative flex items-center gap-2">
+          {/* Play / Pause Button */}
+          <button
+            onClick={toggleAudio}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300"
+          >
+            {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+          </button>
+
+          {/* Volume Button + Slider */}
+          <div
+            onMouseEnter={() => setShowSlider(true)}
+            onMouseLeave={() => setShowSlider(false)}
+            className="relative flex items-center justify-center"
+          >
+            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
+              <Volume2 className="w-5 h-5" />
+            </button>
+
+            {showSlider && (
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="absolute bottom-12 h-32 w-1 bg-white/40 appearance-none cursor-pointer [writing-mode:bt-lr] 
+                  [&::-webkit-slider-thumb]:appearance-none 
+                  [&::-webkit-slider-thumb]:h-4 
+                  [&::-webkit-slider-thumb]:w-4 
+                  [&::-webkit-slider-thumb]:bg-white 
+                  [&::-webkit-slider-thumb]:rounded-full"
+              />
+            )}
+          </div>
+        </div>
       </div>
     </>
   );
