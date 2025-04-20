@@ -22,7 +22,7 @@ export default function CentralText() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.05 }}
           transition={{ duration: 2, ease: "easeInOut" }}
-          className={`${word === 'BLOBS' ? 'bg-gradient-to-r from-[#DBE9F3] via-[#7392BA] to-[#2E5894]' : 'bg-gradient-to-r from-[#2E5894] via-[#7392BA] to-[#DBE9F3]'} bg-clip-text text-transparent text-[12vw] sm:text-[10vw] md:text-[8vw] font-extrabold tracking-wider drop-shadow-xl font-[Poppins]`}
+          className={`${word === 'BLOBS' ? 'bg-gradient-to-r from-[#A770EF] via-[#CF8BF3] to-[#FDB99B]' : 'bg-gradient-to-r from-[#FDB99B] via-[#CF8BF3] to-[#A770EF]'} bg-clip-text text-transparent text-[12vw] sm:text-[10vw] md:text-[8vw] font-extrabold tracking-wider drop-shadow-xl font-[Poppins]`}
         >
           {word}
         </motion.div>
