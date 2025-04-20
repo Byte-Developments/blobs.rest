@@ -1,9 +1,9 @@
 "use client";
 
 import Head from "next/head";
-import NeonCanvas from "./components/NeonCanvas";
-import DateDisplay from "./components/DateDisplay";
-import AmbientMusic from "./components/AmbientMusic";
+import NeonCanvas from "@/components/NeonCanvas";
+import DateDisplay from "@/components/DateDisplay";
+import AmbientMusic from "@/components/AmbientMusic";
 
 export default function HomePage() {
   return (
