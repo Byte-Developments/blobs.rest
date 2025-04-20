@@ -1,28 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import FallingBlobsCanvas from "@/components/FallingBlobsCanvas";
-import AmbientAudio from "@/components/AmbientAudio";
-import CornerIcons from "@/components/BottomBar";
-import CentralText from "@/components/CentralText";
+import Head from "next/head";
+import NeonCanvas from "./components/NeonCanvas";
+import DateDisplay from "./components/DateDisplay";
+import AmbientMusic from "./components/AmbientMusic";
 
-export default function App() {
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMove = (e: MouseEvent) => {
-      setMouse({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
-  }, []);
-
+export default function HomePage() {
   return (
     <>
-      <FallingBlobsCanvas mouse={mouse} />
-      <CentralText />
-      <AmbientAudio />
-      <CornerIcons />
+      <Head>
+        <title>Neon Pipes Visual - Relax and Focus</title>
+        <meta name="description" content="Animated neon pipes with a modern date widget for a calm ambient experience." />
+        <meta name="keywords" content="neon pipes, relaxing animation, ambient canvas, nextjs visual, date display" />
+      </Head>
+      <main
+        className="relative w-full h-screen bg-[#0a0a2a] overflow-hidden font-custom"
+      >
+        <AmbientMusic />
+        <NeonCanvas />
+        <DateDisplay />
+      </main>
     </>
   );
 }
