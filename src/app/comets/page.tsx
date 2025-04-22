@@ -9,8 +9,8 @@ export default function Page() {
   return (
     <>
       <Head>
-        <title>Neon Pipes Visual - Relax and Focus</title>
-        <meta name="description" content="Animated neon pipes with a modern date widget for a calm ambient experience." />
+        <title>visuals rest - neon pipes</title>
+        <meta name="description" content="animated neon pipes with a modern date widget for a calm ambient experience." />
         <meta name="keywords" content="neon pipes, relaxing animation, ambient canvas, nextjs visual, date display" />
       </Head>
       <main

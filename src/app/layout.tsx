@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react"
 
 export const metadata: Metadata = {
-  title: "Neon Pipes Visual - Relax and Focus",
-  description: "Animated neon pipes with a modern date widget for a calm ambient experience.",
-  keywords: ["neon pipes", "ambient animation", "relaxing visual", "canvas", "Next.js SEO"],
+  title: "visuals rest - modern experiences",
+  description: "animated visuals for a calm ambient experience.",
+  keywords: ["neon animation", "pipes animation", "ambient animation", "relaxing visual", "nebula", "nebula animation"],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
