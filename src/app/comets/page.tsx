@@ -11,7 +11,7 @@ export default function Page() {
       <Head>
         <title>visuals rest - neon pipes</title>
         <meta name="description" content="animated neon pipes with a modern date widget for a calm ambient experience." />
-        <meta name="keywords" content="neon pipes, relaxing animation, ambient canvas, nextjs visual, date display" />
+        <meta name="keywords" content="neon pipes, relaxing animation, ambient canvas, date display" />
       </Head>
       <main
         className="relative w-full h-screen bg-[#0a0a2a] overflow-hidden font-custom"
