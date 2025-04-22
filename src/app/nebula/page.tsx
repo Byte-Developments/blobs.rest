@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 const NebulaScene = dynamic(() => import("@/components/NebulaScene"), {
   ssr: false,
