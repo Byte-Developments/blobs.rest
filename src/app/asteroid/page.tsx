@@ -2,7 +2,9 @@
 
 import AmbientMusic from "@/components/AmbientMusic";
 import DateDisplay from "@/components/DateDisplay";
+import AsteroidCanvas from "@/components/AsteroidCanvas";
 import { useEffect, useRef } from "react";
+import Head from "next/head";
 
 export default function Page() {
   return (
