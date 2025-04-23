@@ -141,14 +141,14 @@ export default function AmbientMusic() {
       <div
         className={`
           absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10
-          text-white transition-opacity duration-500
+          text-white transition-opacity duration-500 cursor-pointer
           ${visible ? "opacity-100" : "opacity-0"}
         `}
       >
         <div
           className={`
             flex items-center gap-3 px-4 py-2 bg-white/5 rounded-full
-            backdrop-blur-md shadow-md transition-all duration-300
+            backdrop-blur-md shadow-md transition-all duration-300 cursor-pointer
             ${expanded ? "w-[20rem]" : "w-[12rem]"}
           `}
         >
@@ -156,7 +156,8 @@ export default function AmbientMusic() {
             onClick={toggleAudio}
             className="w-10 h-10 flex items-center justify-center
                        rounded-full bg-white/10 hover:bg-white/20
-                       transition-transform duration-300 hover:scale-105"
+                       transition-transform duration-300 hover:scale-105
+                       cursor-pointer"
           >
             {isPlaying ? (
               <Pause className="w-5 h-5" />
@@ -168,7 +169,8 @@ export default function AmbientMusic() {
             onClick={() => setExpanded(!expanded)}
             className="w-10 h-10 flex items-center justify-center
                        rounded-full bg-white/10 hover:bg-white/20
-                       transition-transform duration-300 hover:scale-105"
+                       transition-transform duration-300 hover:scale-105
+                       cursor-pointer"
           >
             <Volume2 className="w-5 h-5" />
           </button>
@@ -193,6 +195,7 @@ export default function AmbientMusic() {
                 [&::-webkit-slider-thumb]:w-4
                 [&::-webkit-slider-thumb]:bg-green-300
                 [&::-webkit-slider-thumb]:rounded-full
+                cursor-pointer
               "
             />
           )}
