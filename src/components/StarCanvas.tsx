@@ -108,4 +108,6 @@ export default function StarCanvas() {
 
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full -z-10" />;
 }
