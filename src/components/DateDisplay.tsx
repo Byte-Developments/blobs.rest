@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 
 export default function DateDisplay() {
@@ -18,7 +19,7 @@ export default function DateDisplay() {
 
   return (
     <div
-      className="absolute top-1/2 left-1/2 z-10 text-center text-white px-4 py-2 animate-fadeinout"
+      className="absolute top-1/2 left-1/2 z-10 text-center text-white px-4 py-2 animate-fadeinout pointer-events-none"
       style={{ transform: "translate(-50%, -50%)" }}
     >
       <h1 className="text-6xl md:text-8xl font-black tracking-widest drop-shadow-lg uppercase font-[Futurism]">
